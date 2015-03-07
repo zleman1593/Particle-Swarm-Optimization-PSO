@@ -13,16 +13,12 @@ import java.util.*;
 
 public class PSO  {
 
-  // ****************  GRAPHICS  ******************
-  // window dimensions
+
   private final int WINDOW_WIDTH = 1000;
-  private final int WINDOW_HEIGHT = WINDOW_WIDTH;
 
-  // make background black
-  private final int BACKGROUND_ALPHA = 0;
+  private final int WINDOW_HEIGHT = 1000;
 
-  // adjust for personal preference
-  private final int PARTICLE_SIZE = 10;
+
 
 
   // ****************  MISCELLANEOUS    ******************
@@ -79,7 +75,7 @@ public class PSO  {
   
   // constriction factor
   private double phi = phi1 + phi2;
-  public   double constrictionFactor = 2.0 / (phi - 2.0 + Math.sqrt(phi*phi - 4.0*phi));
+  public double constrictionFactor = 2.0 / (phi - 2.0 + Math.sqrt(phi*phi - 4.0*phi));
 
   // test functions
   private final int SPHERE_FUNCTION_NUM = 1;
@@ -98,16 +94,9 @@ public class PSO  {
   private final int LONG_DELAY = 600000;
 
 
-  // initialize the simulation
-  public void setup() {
+  public void main() {
 
-      // window size and graphics mode
-    size(WINDOW_WIDTH, WINDOW_HEIGHT, P2D); 
-
-    // set the background before drawing the particles
-    background(BACKGROUND_ALPHA);  
-    noFill();  
-
+ 
     // create arrays for particle positions
     xPos = new double[numParticles];  
     yPos = new double[numParticles];  
@@ -170,25 +159,17 @@ public class PSO  {
   }
 
 
-  // the "loop forever" method in Processing
-  public void draw() {
+  public void update() {
 
     ++iterationNum;
     System.out.println("iteration " + iterationNum + "  gbest value = " + gBestValue);
 
-    // a kludgy way to stop, but keep the window visible; 
-    // it just stops for a "long" time, defined by the constant LONG_DELAY
+
     if (iterationNum > maxIterations) {
       System.out.println("DONE!!");
-      delay(LONG_DELAY);
     }
 
-    // delay between iterations so we can see what's happening better
-    delay(MILLISECS_DELAY_BETWEEN_ITERS);
-
-    // set the background before drawing the particles
-    background(BACKGROUND_ALPHA);  
-    noFill();  
+ 
 
   
     // update all the particles
@@ -368,13 +349,4 @@ public class PSO  {
     return sumSquares/4000.0 - productCos + 1.0;
   }  
 
-
-
-  // draw the particle
-  void render(float x, float y, int p) {
-
-      fill(0, 255, 0);
-      ellipse(x, y, PARTICLE_SIZE, PARTICLE_SIZE);
-  }
-  
 }

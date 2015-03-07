@@ -1,5 +1,5 @@
 /*
-Zackery Leman, Ivy Xing, Alana Weinstein
+Zackery Leman, Min "Ivy" Xing, Alana Weinstein
  Particle Swarm Optimization 
  
  Adapted from Stephen Majercik
@@ -18,10 +18,6 @@ public class PSO  {
 
   private final int WINDOW_HEIGHT = 1000;
 
-
-
-
-  // ****************  MISCELLANEOUS    ******************
 
   // for random numbers
   private Random rand = new Random();
@@ -61,9 +57,6 @@ public class PSO  {
   private final double NO_INIT_ZONE_TOP_COORD = FUNCTION_SHIFT - NO_INIT_ZONE_SIDE/2.0;
   private final double NO_INIT_ZONE_BOTTOM_COORD = FUNCTION_SHIFT + NO_INIT_ZONE_SIDE/2.0;
 
-  // ******************************************************************************************
-  // ****** You will need to play with the values of some of the variables below 
-  // ******************************************************************************************
 
   // number of particles in the swarm
   private int numParticles = 10; 
@@ -90,13 +83,15 @@ public class PSO  {
   // for controlling termination 
   private int iterationNum = 0;
   private int maxIterations = 50;
-  private final int MILLISECS_DELAY_BETWEEN_ITERS = 100;
-  private final int LONG_DELAY = 600000;
 
 
-  public void main() {
+  public static void main(String[] args) {
 
+	  PSO swarm = new PSO();
+	  
+  }
  
+  public PSO(){
     // create arrays for particle positions
     xPos = new double[numParticles];  
     yPos = new double[numParticles];  
@@ -153,24 +148,20 @@ public class PSO  {
         gBestYPos = yPos[p];    
       }
       
-      // draw the particle
-      render((float) xPos[p], (float) yPos[p], p);
+      
+    
     }
+    while (iterationNum < maxIterations) {
+        System.out.println("iteration " + iterationNum + "  gbest value = " + gBestValue);
+          update(); 
+          iterationNum++;
+          }
+          System.out.println("DONE!!");
   }
 
 
   public void update() {
-
-    ++iterationNum;
-    System.out.println("iteration " + iterationNum + "  gbest value = " + gBestValue);
-
-
-    if (iterationNum > maxIterations) {
-      System.out.println("DONE!!");
-    }
-
- 
-
+	
   
     // update all the particles
     for (int p = 0 ; p < numParticles ; p++) {
@@ -232,9 +223,9 @@ public class PSO  {
         gBestYPos = yPos[p];
       }
 
-      // draw the particle
-      render((float) xPos[p], (float) yPos[p], p);
+
     }
+  
   }
 
 

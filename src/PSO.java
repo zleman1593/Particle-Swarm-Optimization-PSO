@@ -41,7 +41,7 @@ public class PSO {
 	private final double MAX_INIT_SPEED = 3.0;
 
 	// shifts the optimum so that it is in the center of the window
-	private final double FUNCTION_SHIFT = WINDOW_WIDTH / 2.0;
+	private final double FUNCTION_SHIFT = 0;//WINDOW_WIDTH / 2.0;
 	// establishes a zone around the optimum that is off limits for particles
 	// when the
 	// swarm is initialized (to make it a little harder)
@@ -110,25 +110,29 @@ public class PSO {
 		// find the initial global best
 		for (int p = 0; p < numParticles; p++) {
 
-			// get coordimates outside of the zone around the global optimum
-			double x = WINDOW_WIDTH * rand.nextDouble();
-			double y = WINDOW_HEIGHT * rand.nextDouble();
-			while (x > NO_INIT_ZONE_LEFT_COORD && x < NO_INIT_ZONE_RIGHT_COORD && y > NO_INIT_ZONE_TOP_COORD
-					&& y < NO_INIT_ZONE_BOTTOM_COORD) {
-				x = WINDOW_WIDTH * rand.nextDouble();
-				y = WINDOW_HEIGHT * rand.nextDouble();
-			}
+			
 
 			// set the coordinates and get the value of the objective function
 			// at that point
 
 			for (int i = 0; i < dimensions; i++) {
-				position.get(i)[0] = 0;// 1000.0 - rand.nextDouble() *100.0;
+				
+				// get coordinates outside of the zone around the global optimum
+				double x = WINDOW_WIDTH * rand.nextDouble();
+				double y = WINDOW_HEIGHT * rand.nextDouble();
+				while (x > NO_INIT_ZONE_LEFT_COORD && x < NO_INIT_ZONE_RIGHT_COORD && y > NO_INIT_ZONE_TOP_COORD && y < NO_INIT_ZONE_BOTTOM_COORD) {
+					x = WINDOW_WIDTH * rand.nextDouble();
+
+				}
+				position.get(i)[p] = x;
+				
 
 			}
 
 			// initial value
 			double currValue = eval(testFunction, position, p);
+			
+			
 
 			// initialize velocities
 			for (int i = 0; i < dimensions; i++) {
@@ -254,17 +258,12 @@ public class PSO {
 
 	// returns the value of the specified function for point (x, y, z, etc.)
 	public double eval(int functionNum, ArrayList<double[]> position, int index) {
-		ArrayList<double[]> positionShifted = (ArrayList<double[]>) position.clone();
-		// TODO: Shallow copy is proably not enough
-		// Need to make a copy
-		for (int i = 0; i < dimensions; i++) {
-			positionShifted.get(i)[index] -= FUNCTION_SHIFT;
-		}
 
+	
 		double retValue = 0.0;
 
 		if (functionNum == SPHERE_FUNCTION_NUM) {
-			retValue = evalSphere(positionShifted, index);
+			retValue = evalSphere(position, index);
 		} /*
 		 * else if (functionNum == ROSENBROCK_FUNCTION_NUM) { retValue =
 		 * evalRosenbrock(positionShifted, index); } else if (functionNum ==

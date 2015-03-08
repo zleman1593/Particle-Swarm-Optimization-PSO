@@ -41,7 +41,7 @@ public class PSO {
 	private final double MAX_INIT_SPEED = 3.0;
 
 	// shifts the optimum so that it is in the center of the window
-	private final double FUNCTION_SHIFT = 0;//WINDOW_WIDTH / 2.0;
+	private final double FUNCTION_SHIFT = 0;// WINDOW_WIDTH / 2.0;
 	// establishes a zone around the optimum that is off limits for particles
 	// when the
 	// swarm is initialized (to make it a little harder)
@@ -68,7 +68,6 @@ public class PSO {
 	private final int ROSENBROCK_FUNCTION_NUM = 2;
 	private final int ACKLEY_FUNCTION_NUM = 3;
 	private final int RASTRIGIN_FUNCTION_NUM = 4;
-	private final int GRIEWANK_FUNCTION_NUM = 5;
 
 	// which one to test
 	public int testFunction = SPHERE_FUNCTION_NUM;
@@ -79,16 +78,16 @@ public class PSO {
 
 	public static void main(String[] args) {
 
-		PSO swarm = new PSO(4);
+		PSO swarm = new PSO(2);
 
 	}
 
 	public PSO(int dimensions) {
 		for (int i = 0; i < dimensions; i++) {
-		gBestDimensionPos.add(new double[numParticles]);
-		pBestDimensionPos.add(new double[numParticles]);
+			gBestDimensionPos.add(new double[numParticles]);
+			pBestDimensionPos.add(new double[numParticles]);
 		}
-		
+
 		this.dimensions = dimensions;
 		for (int i = 0; i < dimensions; i++) {
 			// create arrays for particle positions
@@ -110,33 +109,81 @@ public class PSO {
 		// find the initial global best
 		for (int p = 0; p < numParticles; p++) {
 
-			
-
 			// set the coordinates and get the value of the objective function
 			// at that point
 
 			for (int i = 0; i < dimensions; i++) {
-				
-				// get coordinates outside of the zone around the global optimum
-				double x = WINDOW_WIDTH * rand.nextDouble();
-				double y = WINDOW_HEIGHT * rand.nextDouble();
-				while (x > NO_INIT_ZONE_LEFT_COORD && x < NO_INIT_ZONE_RIGHT_COORD && y > NO_INIT_ZONE_TOP_COORD && y < NO_INIT_ZONE_BOTTOM_COORD) {
-					x = WINDOW_WIDTH * rand.nextDouble();
 
+				
+				double initPosition = 0;
+
+				//TODO: Change these so they are random doubles
+				switch (testFunction) {
+				case 1:
+					initPosition = rand.nextInt(15) + 15;
+					while (initPosition < 15 || initPosition > 30) {
+						initPosition = rand.nextInt(15) + 15;
+					}
+					break;
+				case 2:
+					initPosition = rand.nextInt(15) + 15;
+					while (initPosition < 15 || initPosition > 30) {
+						initPosition = rand.nextInt(15) + 15;
+					}
+					break;
+				case 3:
+
+					initPosition = rand.nextInt(16) + 16;
+					while (initPosition < 16 || initPosition > 32) {
+						initPosition = rand.nextInt(16) + 16;
+					}
+					break;
+
+				case 4:
+					initPosition = 5.12 + (5.12 - 2.56)*rand.nextDouble();
+					while (initPosition < 2.56 || initPosition > 5.12) {
+						initPosition =  2.56 + (5.12 - 2.56)*rand.nextDouble();
+					}
+					break;
+				default:
+					break;
 				}
-				position.get(i)[p] = x;
-				
 
+				position.get(i)[p] = initPosition;
 			}
 
 			// initial value
 			double currValue = eval(testFunction, position, p);
-			
-			
 
 			// initialize velocities
 			for (int i = 0; i < dimensions; i++) {
-				velocity.get(i)[p] = MIN_INIT_SPEED + rand.nextDouble() * (MAX_INIT_SPEED - MIN_INIT_SPEED);
+				double initVelocity = 0;
+
+				switch (testFunction) {
+				case 1:
+					initVelocity = rand.nextInt(5) - 2;
+					while (initVelocity < -2 || initVelocity > 2) {
+						initVelocity = rand.nextInt(5) - 2;
+					}
+					break;
+				case 2:
+					initVelocity = rand.nextInt(5) - 2;
+					while (initVelocity < -2 || initVelocity > 2) {
+						initVelocity = rand.nextInt(5) - 2;
+					}
+					break;
+				case 3:
+				case 4:
+					initVelocity = rand.nextInt(7) - 2;
+					while (initVelocity < -2 || initVelocity > 4) {
+						initVelocity = rand.nextInt(7) - 2;
+					}
+					break;
+				default:
+					break;
+				}
+
+				velocity.get(i)[p] = initVelocity;
 			}
 
 			// ****** store initial personal best in the pBest arrays provided
@@ -171,9 +218,9 @@ public class PSO {
 			double newValue;
 			double accPersDimensionPos[] = new double[dimensions];
 			double accGlobDimensionPos[] = new double[dimensions];
-			
+
 			double newDimensionVel[] = new double[dimensions];
-			
+
 			double newDimensionPos[] = new double[dimensions];
 			;
 
@@ -259,7 +306,6 @@ public class PSO {
 	// returns the value of the specified function for point (x, y, z, etc.)
 	public double eval(int functionNum, ArrayList<double[]> position, int index) {
 
-	
 		double retValue = 0.0;
 
 		if (functionNum == SPHERE_FUNCTION_NUM) {

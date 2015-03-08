@@ -11,10 +11,6 @@ import java.util.*;
 
 public class PSO {
 
-	private final int WINDOW_WIDTH = 1000;
-
-	private final int WINDOW_HEIGHT = 1000;
-
 	// for random numbers
 	private Random rand = new Random();
 
@@ -36,21 +32,6 @@ public class PSO {
 	private ArrayList<double[]> gBestDimensionPos = new ArrayList<double[]>();
 	private double gBestValue;
 
-	// initial speed range
-	private final double MIN_INIT_SPEED = -3.0;
-	private final double MAX_INIT_SPEED = 3.0;
-
-	// shifts the optimum so that it is in the center of the window
-	private final double FUNCTION_SHIFT = 0;// WINDOW_WIDTH / 2.0;
-	// establishes a zone around the optimum that is off limits for particles
-	// when the
-	// swarm is initialized (to make it a little harder)
-	private final double NO_INIT_ZONE_SIDE = 100;
-	private final double NO_INIT_ZONE_LEFT_COORD = FUNCTION_SHIFT - NO_INIT_ZONE_SIDE / 2.0;
-	private final double NO_INIT_ZONE_RIGHT_COORD = FUNCTION_SHIFT + NO_INIT_ZONE_SIDE / 2.0;
-	private final double NO_INIT_ZONE_TOP_COORD = FUNCTION_SHIFT - NO_INIT_ZONE_SIDE / 2.0;
-	private final double NO_INIT_ZONE_BOTTOM_COORD = FUNCTION_SHIFT + NO_INIT_ZONE_SIDE / 2.0;
-
 	// number of particles in the swarm
 	private int numParticles = 10;
 
@@ -70,7 +51,15 @@ public class PSO {
 	private final int RASTRIGIN_FUNCTION_NUM = 4;
 
 	// which one to test
-	public int testFunction = SPHERE_FUNCTION_NUM;
+	public int testFunction = 1;
+
+	// neighborhoods
+	private final int GLOBAL = 1;
+	private final int VON = 2;
+	private final int RING = 3;
+	private final int RANDOM = 4;
+	// which neighborhood to test
+	public int neighborhood = 1;
 
 	// for controlling termination
 	private int iterationNum = 0;
@@ -78,11 +67,38 @@ public class PSO {
 
 	public static void main(String[] args) {
 
-		PSO swarm = new PSO(2);
+		PSO swarm = new PSO(args[0], Integer.parseInt(args[1]), Integer.parseInt(args[2]), args[3],
+				Integer.parseInt(args[4]));
 
 	}
 
-	public PSO(int dimensions) {
+	public PSO(String neighborhood, int swarmSize, int maxIterations, String function, int dimensions) {
+		this.numParticles = swarmSize;
+		this.maxIterations = maxIterations;
+
+		if (neighborhood.equalsIgnoreCase("gl")) {
+			this.neighborhood = GLOBAL;
+		} else if (neighborhood.equalsIgnoreCase("ri")) {
+			this.neighborhood = RING;
+
+		} else if (neighborhood.equalsIgnoreCase("vn")) {
+			this.neighborhood = VON;
+
+		} else if (neighborhood.equalsIgnoreCase("ra")) {
+			this.neighborhood = RANDOM;
+
+		}
+
+		if (function.equalsIgnoreCase("sp")) {
+			this.testFunction = SPHERE_FUNCTION_NUM;
+		} else if (function.equalsIgnoreCase("rok")) {
+			this.testFunction = ROSENBROCK_FUNCTION_NUM;
+		} else if (function.equalsIgnoreCase("ack")) {
+			this.testFunction = ACKLEY_FUNCTION_NUM;
+		} else if (function.equalsIgnoreCase("ras")) {
+			this.testFunction = RASTRIGIN_FUNCTION_NUM;
+		}
+
 		for (int i = 0; i < dimensions; i++) {
 			gBestDimensionPos.add(new double[numParticles]);
 			pBestDimensionPos.add(new double[numParticles]);
@@ -114,10 +130,9 @@ public class PSO {
 
 			for (int i = 0; i < dimensions; i++) {
 
-				
 				double initPosition = 0;
 
-				//TODO: Change these so they are random doubles
+				// TODO: Change these so they are random doubles
 				switch (testFunction) {
 				case 1:
 					initPosition = rand.nextInt(15) + 15;
@@ -140,9 +155,9 @@ public class PSO {
 					break;
 
 				case 4:
-					initPosition = 5.12 + (5.12 - 2.56)*rand.nextDouble();
+					initPosition = 5.12 + (5.12 - 2.56) * rand.nextDouble();
 					while (initPosition < 2.56 || initPosition > 5.12) {
-						initPosition =  2.56 + (5.12 - 2.56)*rand.nextDouble();
+						initPosition = 2.56 + (5.12 - 2.56) * rand.nextDouble();
 					}
 					break;
 				default:

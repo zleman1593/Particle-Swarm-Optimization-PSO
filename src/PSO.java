@@ -219,7 +219,7 @@ public class PSO {
 
 		}
 		while (iterationNum < maxIterations) {
-			System.out.println("iteration " + iterationNum + "  gbest value = " + gBestValue);
+			System.out.println("iteration " + iterationNum + "position value: " +  gBestDimensionPos.get(0) + " "+ gBestDimensionPos.get(1) + "  gbest value = " + gBestValue);
 			update();
 			iterationNum++;
 		}
@@ -248,7 +248,7 @@ public class PSO {
 			// ****** compute the acceleration due to global best
 
 			for (int i = 0; i < dimensions; i++) {
-				accGlobDimensionPos[i] = phi1 * (gBestDimensionPos.get(i) - position.get(i)[p]);
+				accGlobDimensionPos[i] = phi2 * (gBestDimensionPos.get(i) - position.get(i)[p]);
 			}
 
 			// ****** constrict the new velocity and reset the current velocity

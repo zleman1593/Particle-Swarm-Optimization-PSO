@@ -103,7 +103,6 @@ public class PSO {
 			pBestDimensionPos.add(new double[numParticles]);
 			gBestDimensionPos.add(0.0);
 		}
-		
 
 		this.dimensions = dimensions;
 		for (int i = 0; i < dimensions; i++) {
@@ -213,13 +212,14 @@ public class PSO {
 			if (currValue < gBestValue) {
 				gBestValue = currValue;
 				for (int i = 0; i < dimensions; i++) {
-					gBestDimensionPos.set(i,position.get(i)[p]);
+					gBestDimensionPos.set(i, position.get(i)[p]);
 				}
 			}
 
 		}
 		while (iterationNum < maxIterations) {
-			System.out.println("iteration " + iterationNum + "position value: " +  gBestDimensionPos.get(0) + " "+ gBestDimensionPos.get(1) + "  gbest value = " + gBestValue);
+			System.out.println("iteration " + iterationNum + " position value: " + gBestDimensionPos.get(0) + " "
+					+ gBestDimensionPos.get(1) + "  gbest value = " + gBestValue);
 			update();
 			iterationNum++;
 		}
@@ -326,15 +326,14 @@ public class PSO {
 
 		if (functionNum == SPHERE_FUNCTION_NUM) {
 			retValue = evalSphere(position, index);
-		} /*
-		 * else if (functionNum == ROSENBROCK_FUNCTION_NUM) { retValue =
-		 * evalRosenbrock(positionShifted, index); } else if (functionNum ==
-		 * RASTRIGIN_FUNCTION_NUM) { retValue = evalRastrigin(positionShifted,
-		 * index); } else if (functionNum == ACKLEY_FUNCTION_NUM) { retValue =
-		 * evalAckley(positionShifted, index); } else if (functionNum ==
-		 * GRIEWANK_FUNCTION_NUM) { retValue = evalGriewank(positionShifted,
-		 * index); }
-		 */
+		} else if (functionNum == ROSENBROCK_FUNCTION_NUM) {
+			retValue = evalRosenbrock(position, index);
+		} else if (functionNum == RASTRIGIN_FUNCTION_NUM) {
+			retValue = evalRastrigin(position, index);
+		} else if (functionNum == ACKLEY_FUNCTION_NUM) {
+			retValue = evalAckley(position, index);
+		}
+
 		return retValue;
 	}
 
@@ -349,42 +348,54 @@ public class PSO {
 		return sum;
 	}
 
+	// The below functions were based of the general function implementation
+	// from https://code.google.com/p/evolutionary-algorithm/
+
 	// returns the value of the Rosenbrock Function at point (x, y)
 	// minimum is 0.0, which occurs at (1.0,...,1.0)
-	public double evalRosenbrock(double x, double y) {
+	public double evalRosenbrock(ArrayList<double[]> shiftedPosition, int index) {
 
-		return 100.0 * Math.pow(y - x * x, 2.0) + Math.pow(x - 1.0, 2.0);
+		double sum = 0.0;
+		double[] v = new double[shiftedPosition.size()];
+		for (int i = 0; i < shiftedPosition.size(); i++)
+			v[i] = shiftedPosition.get(i)[index] + 1;
+		for (int i = 0; i < (shiftedPosition.size() - 1); i++) {
+			double temp1 = (v[i] * v[i]) - v[i + 1];
+			double temp2 = v[i] - 1.0;
+			sum += (100.0 * temp1 * temp1) + (temp2 * temp2);
+		}
+
+		return (sum);
+
 	}
 
 	// returns the value of the Rastrigin Function at point (x, y)
 	// minimum is 0.0, which occurs at (0.0,...,0.0)
-	public double evalRastrigin(double x, double y) {
+	public double evalRastrigin(ArrayList<double[]> shiftedPosition, int index) {
 
-		double retVal = 0;
-		retVal += x * x - 10.0 * Math.cos(2.0 * Math.PI * x) + 10.0;
-		retVal += y * y - 10.0 * Math.cos(2.0 * Math.PI * y) + 10.0;
+		double res = 10 * shiftedPosition.size();
+		for (int i = 0; i < shiftedPosition.size(); i++)
+			res += Math.pow(shiftedPosition.get(i)[index], 2) - 10
+					* Math.cos(2.0 * Math.PI * shiftedPosition.get(i)[index]);
+		return res;
 
-		return retVal;
 	}
 
 	// returns the value of the Ackley Function at point (x, y)
 	// minimum is 0.0, which occurs at (0.0,...,0.0)
-	public double evalAckley(double x, double y) {
+	public double evalAckley(ArrayList<double[]> shiftedPosition, int index) {
 
-		double firstSum = x * x + y * y;
-		double secondSum = Math.cos(2.0 * Math.PI * x) + Math.cos(2.0 * Math.PI * y);
+		double sum1 = 0.0;
+		double sum2 = 0.0;
 
-		return -20.0 * Math.exp(-0.2 * Math.sqrt(firstSum / 2.0)) - Math.exp(secondSum / 2.0) + 20.0 + Math.E;
-	}
+		for (int i = 0; i < shiftedPosition.size(); i++) {
+			sum1 += (shiftedPosition.get(i)[index] * shiftedPosition.get(i)[index]);
+			sum2 += (Math.cos(2 * Math.PI * shiftedPosition.get(i)[index]));
+		}
 
-	// returns the value of the Griewank function at point (x, y)
-	// minimum is 0.0, which occurs at (0.0,...,0.0)
-	public double evalGriewank(double x, double y) {
+		return (-20.0 * Math.exp(-0.2 * Math.sqrt(sum1 / ((double) shiftedPosition.size())))
+				- Math.exp(sum2 / ((double) shiftedPosition.size())) + 20.0 + Math.E);
 
-		double sumSquares = x * x + y * y;
-		double productCos = Math.cos(x / Math.sqrt(1)) * Math.cos(y / Math.sqrt(2));
-
-		return sumSquares / 4000.0 - productCos + 1.0;
 	}
 
 }

@@ -17,7 +17,7 @@ public class PSO {
 	// **************** PSO ******************
 	private int dimensions;
 
-	// x and y ,z etc. positions for each particle
+	// x and y, z etc. positions for each particle
 	private ArrayList<double[]> position = new ArrayList<double[]>();
 
 	// x and y velocities for each particle
@@ -29,7 +29,7 @@ public class PSO {
 	private double[] pBestValue;
 
 	// gbest position and value
-	private ArrayList<double[]> gBestDimensionPos = new ArrayList<double[]>();
+	private ArrayList<Double> gBestDimensionPos = new ArrayList<Double>();
 	private double gBestValue;
 
 	// number of particles in the swarm
@@ -100,9 +100,10 @@ public class PSO {
 		}
 
 		for (int i = 0; i < dimensions; i++) {
-			gBestDimensionPos.add(new double[numParticles]);
 			pBestDimensionPos.add(new double[numParticles]);
+			gBestDimensionPos.add(0.0);
 		}
+		
 
 		this.dimensions = dimensions;
 		for (int i = 0; i < dimensions; i++) {
@@ -212,7 +213,7 @@ public class PSO {
 			if (currValue < gBestValue) {
 				gBestValue = currValue;
 				for (int i = 0; i < dimensions; i++) {
-					gBestDimensionPos.get(i)[p] = position.get(i)[p];
+					gBestDimensionPos.set(i,position.get(i)[p]);
 				}
 			}
 
@@ -247,7 +248,7 @@ public class PSO {
 			// ****** compute the acceleration due to global best
 
 			for (int i = 0; i < dimensions; i++) {
-				accGlobDimensionPos[i] = phi1 * (gBestDimensionPos.get(i)[p] - position.get(i)[p]);
+				accGlobDimensionPos[i] = phi1 * (gBestDimensionPos.get(i) - position.get(i)[p]);
 			}
 
 			// ****** constrict the new velocity and reset the current velocity
@@ -288,7 +289,7 @@ public class PSO {
 			if (newValue < gBestValue) {
 				gBestValue = newValue;
 				for (int i = 0; i < dimensions; i++) {
-					gBestDimensionPos.get(i)[p] = position.get(i)[p];
+					gBestDimensionPos.set(i, position.get(i)[p]);
 				}
 
 			}

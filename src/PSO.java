@@ -72,10 +72,11 @@ public class PSO {
 
 	}
 
+	/* Constructor */
 	public PSO(String neighborhood, int swarmSize, int maxIterations, String function, int dimensions) {
 		this.numParticles = swarmSize;
 		this.maxIterations = maxIterations;
-
+		this.dimensions = dimensions;
 		if (neighborhood.equalsIgnoreCase("gl")) {
 			this.neighborhood = GLOBAL;
 		} else if (neighborhood.equalsIgnoreCase("ri")) {
@@ -104,7 +105,6 @@ public class PSO {
 			gBestDimensionPos.add(0.0);
 		}
 
-		this.dimensions = dimensions;
 		for (int i = 0; i < dimensions; i++) {
 			// create arrays for particle positions
 			position.add(new double[numParticles]);
@@ -120,6 +120,11 @@ public class PSO {
 		// set gbest value very high so it will be replaced in the loop
 		// that creates the particles
 		gBestValue = Double.MAX_VALUE;
+
+		start();
+	}
+
+	private void start() {
 
 		// create particles and calculate initial personal bests;
 		// find the initial global best
@@ -298,27 +303,6 @@ public class PSO {
 
 	}
 
-	// returns the maximum distance between particles in the swarm
-	public double maxDistance(double[] x, double[] y) {
-
-		double maxDist = -1.0;
-		for (int p1 = 0; p1 < numParticles; p1++) {
-			for (int p2 = p1 + 1; p2 < numParticles; p2++) {
-				double thisDistance = distance(x[p1], y[p1], x[p2], y[p2]);
-				if (thisDistance > maxDist)
-					maxDist = thisDistance;
-			}
-		}
-
-		return maxDist;
-	}
-
-	// returns the distance between (x1, y1) and (x2, y2)
-	public double distance(double x1, double y1, double x2, double y2) {
-
-		return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
-	}
-
 	// returns the value of the specified function for point (x, y, z, etc.)
 	public double eval(int functionNum, ArrayList<double[]> position, int index) {
 
@@ -337,7 +321,7 @@ public class PSO {
 		return retValue;
 	}
 
-	// returns the value of the Sphere function at point (x, y)
+	// returns the value of the Sphere function at point (x, y, z, etc.)
 	// minimum is 0.0, which occurs at (0.0,...,0.0)
 	public double evalSphere(ArrayList<double[]> shiftedPosition, int index) {
 		double sum = 0;
@@ -351,7 +335,7 @@ public class PSO {
 	// The below functions were based of the general function implementation
 	// from https://code.google.com/p/evolutionary-algorithm/
 
-	// returns the value of the Rosenbrock Function at point (x, y)
+	// returns the value of the Rosenbrock Function at point (x, y, z, etc.)
 	// minimum is 0.0, which occurs at (1.0,...,1.0)
 	public double evalRosenbrock(ArrayList<double[]> shiftedPosition, int index) {
 
@@ -369,7 +353,7 @@ public class PSO {
 
 	}
 
-	// returns the value of the Rastrigin Function at point (x, y)
+	// returns the value of the Rastrigin Function at point (x, y, z, etc.)
 	// minimum is 0.0, which occurs at (0.0,...,0.0)
 	public double evalRastrigin(ArrayList<double[]> shiftedPosition, int index) {
 
@@ -381,7 +365,7 @@ public class PSO {
 
 	}
 
-	// returns the value of the Ackley Function at point (x, y)
+	// returns the value of the Ackley Function at point (x, y, z, etc.)
 	// minimum is 0.0, which occurs at (0.0,...,0.0)
 	public double evalAckley(ArrayList<double[]> shiftedPosition, int index) {
 

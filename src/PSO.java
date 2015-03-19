@@ -9,6 +9,9 @@ Zackery Leman, Min "Ivy" Xing, Alana Weinstein
 
 import java.util.*;
 
+//Notes: make sure to update global appropriately
+//Remove the random while loops as they are uneeded
+
 public class PSO {
 
 	// for random numbers
@@ -16,22 +19,6 @@ public class PSO {
 
 	// **************** PSO ******************
 	private int dimensions;
-
-	// x and y, z etc. positions for each particle
-	private ArrayList<double[]> position = new ArrayList<double[]>();
-
-	// x and y velocities for each particle
-	private ArrayList<double[]> velocity = new ArrayList<double[]>();
-
-	// pBest positions and values for each particle
-	private ArrayList<double[]> pBestDimensionPos = new ArrayList<double[]>();
-
-	private double[] pBestValue;
-
-	// gbest position and value
-	private ArrayList<Double> gBestDimensionPos = new ArrayList<Double>();
-	private double gBestValue;
-
 	// number of particles in the swarm
 	private int numParticles = 10;
 
@@ -50,9 +37,6 @@ public class PSO {
 	private final int ACKLEY_FUNCTION_NUM = 3;
 	private final int RASTRIGIN_FUNCTION_NUM = 4;
 
-	// which one to test
-	public int testFunction = 1;
-
 	// neighborhoods
 	private final int GLOBAL = 1;
 	private final int VON = 2;
@@ -64,9 +48,30 @@ public class PSO {
 	// for controlling termination
 	private int iterationNum = 0;
 	private int maxIterations = 50;
+	// which one to test
+	public int testFunction = 1;
+
+	// **************** Particle info ******************
+
+	// x and y, z etc. positions for each particle
+	private ArrayList<double[]> position = new ArrayList<double[]>();
+
+	// x and y velocities for each particle
+	private ArrayList<double[]> velocity = new ArrayList<double[]>();
+
+	// pBest positions and values for each particle
+	private ArrayList<double[]> pBestDimensionPos = new ArrayList<double[]>();
+
+	private double[] pBestValue;
+
+	// **************Global N********************
+	// gbest position and value
+	private ArrayList<Double> gBestDimensionPos = new ArrayList<Double>();
+	private double gBestValue;
+
+	// **********************************
 
 	public static void main(String[] args) {
-
 		PSO swarm = new PSO(args[0], Integer.parseInt(args[1]), Integer.parseInt(args[2]), args[3],
 				Integer.parseInt(args[4]));
 
@@ -238,43 +243,27 @@ public class PSO {
 
 			double newValue;
 			double accPersDimensionPos[] = new double[dimensions];
-			double accGlobDimensionPos[] = new double[dimensions];
+			double accNDimensionPos[] = new double[dimensions];
 
-			double newDimensionVel[] = new double[dimensions];
-
-			double newDimensionPos[] = new double[dimensions];
-			;
-
-			// ****** compute the acceleration due to personal best
+			//Iterate over all the dimensions
 			for (int i = 0; i < dimensions; i++) {
-				accPersDimensionPos[i] = phi1 * (pBestDimensionPos.get(i)[p] - position.get(i)[p]);
-			}
+				// ****** compute the acceleration due to personal best
+				double smallRandomNumber1 = phi1 * rand.nextDouble();
+				accPersDimensionPos[i] = smallRandomNumber1 * (pBestDimensionPos.get(i)[p] - position.get(i)[p]);
 
-			// ****** compute the acceleration due to global best
+				// ****** compute the acceleration due to global best
+				double bestPosForNeighborhood = neighborhoodBest(p, i);
+				double smallRandomNumber2 = phi2 * rand.nextDouble();
+				accNDimensionPos[i] = smallRandomNumber2 * (bestPosForNeighborhood - position.get(i)[p]);
 
-			for (int i = 0; i < dimensions; i++) {
-				accGlobDimensionPos[i] = phi2 * (gBestDimensionPos.get(i) - position.get(i)[p]);
-			}
+				// ****** constrict the new velocity and reset the current
+				// velocity
+				velocity.get(i)[p] = constrictionFactor
+						* (velocity.get(i)[p] + accPersDimensionPos[i] + accNDimensionPos[i]);
 
-			// ****** constrict the new velocity and reset the current velocity
-			for (int i = 0; i < dimensions; i++) {
-				newDimensionVel[i] = velocity.get(i)[p] + accPersDimensionPos[i] + accGlobDimensionPos[i];
-			}
+				// ****** update the position
+				position.get(i)[p] = position.get(i)[p] + velocity.get(i)[p];
 
-			for (int i = 0; i < dimensions; i++) {
-				newDimensionVel[i] = velocity.get(i)[p] + accPersDimensionPos[i] + accGlobDimensionPos[i];
-				velocity.get(i)[p] = newDimensionVel[i] * constrictionFactor;
-			}
-
-			// ****** update the position
-			for (int i = 0; i < dimensions; i++) {
-				accPersDimensionPos[i] = phi1 * (pBestDimensionPos.get(i)[p] - position.get(i)[p]);
-
-				newDimensionPos[i] = position.get(i)[p] + velocity.get(i)[p];
-			}
-
-			for (int i = 0; i < dimensions; i++) {
-				position.get(i)[p] = newDimensionPos[i];
 			}
 
 			// ****** find the value of the new position
@@ -303,8 +292,64 @@ public class PSO {
 
 	}
 
+	private double neighborhoodBest(int particle, int dimension) {
+		double bestValue = 0;
+		switch (neighborhood) {
+		case 1:
+			bestValue = gBestDimensionPos.get(dimension);
+			break;
+		case 2:
+			// bestValue = VN(particle, dimension);
+			break;
+		case 3:
+			bestValue = ring(particle, dimension);
+
+			break;
+		default:
+			bestValue = gBestDimensionPos.get(dimension);
+			break;
+		}
+
+		return bestValue;
+	}
+
+	/*
+	 * private double VN(int particle, int dimension) { double maxValue =
+	 * Integer.MIN_VALUE; }
+	 * 
+	 * private double random(int particle, int dimension) { double maxValue =
+	 * Integer.MIN_VALUE; }
+	 */
+	private double ring(int particle, int dimension) {
+		double minValue = pBestValue[particle];
+		double position = pBestDimensionPos.get(dimension)[particle];
+		if (particle != 0) {
+			if (minValue > pBestValue[particle - 1]) {
+				minValue = pBestValue[particle - 1];
+				position = pBestDimensionPos.get(dimension)[particle - 1];
+			}
+		} else {
+			if (minValue > pBestValue[pBestValue.length - 1]) {
+				minValue = pBestValue[pBestValue.length - 1];
+				position = pBestDimensionPos.get(dimension)[pBestValue.length - 1];
+			}
+		}
+		if (particle != pBestValue.length - 1) {
+			if (minValue > pBestValue[particle + 1]) {
+				minValue = pBestValue[particle + 1];
+				position = pBestDimensionPos.get(dimension)[particle + 1];
+			}
+		} else {
+			if (minValue > pBestValue[0]) {
+				minValue = pBestValue[0];
+				position = pBestDimensionPos.get(dimension)[0];
+			}
+		}
+		return position;
+	}
+
 	// returns the value of the specified function for point (x, y, z, etc.)
-	public double eval(int functionNum, ArrayList<double[]> position, int index) {
+	private double eval(int functionNum, ArrayList<double[]> position, int index) {
 
 		double retValue = 0.0;
 

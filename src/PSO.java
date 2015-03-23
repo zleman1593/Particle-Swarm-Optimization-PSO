@@ -14,19 +14,19 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 //Notes: make sure to update global appropriately
-//Remove the random while loops as they are uneeded
-//Change height and width to be dynamic
-//Change k to be taken as a prameter
+//Remove the random while loops as they are unneeded
+
+//Change k to be taken as a parameter
 
 public class PSO {
 
 	// for random numbers
 	private Random rand = new Random();
 
-	private int width = 4;
-	private int height = 3;
+	private int width;
+	private int height;
 	private int k = 5;
-
+	public ArrayList<Double> progress = new ArrayList<Double>();
 	// **************** PSO ******************
 	private int dimensions;
 	// number of particles in the swarm
@@ -147,7 +147,7 @@ public class PSO {
 
 	}
 
-	public void start() {
+	public double start() {
 
 		// create particles and calculate initial personal bests;
 		// find the initial global best
@@ -246,12 +246,16 @@ public class PSO {
 
 		}
 		while (iterationNum < maxIterations) {
-			System.out.println("iteration " + iterationNum + " position value: " + gBestDimensionPos.get(0) + " "
-					+ gBestDimensionPos.get(1) + "  gbest value = " + gBestValue);
+			/*System.out.println("iteration " + iterationNum + " position value: " + gBestDimensionPos.get(0) + " "
+					+ gBestDimensionPos.get(1) + "  gbest value = " + gBestValue);*/
 			update();
+			if(iterationNum % 500 == 0 || iterationNum == 0){
+				progress.add(gBestValue);
+			}
 			iterationNum++;
 		}
 		System.out.println("DONE!!");
+		return gBestValue;
 	}
 
 	public void update() {

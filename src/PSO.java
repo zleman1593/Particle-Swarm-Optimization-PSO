@@ -23,15 +23,20 @@ public class PSO {
 	// for random numbers
 	private Random rand = new Random();
 
+	// The width and height of the topology for VN
 	private int width;
 	private int height;
+
+	// The number of random neighbors to use
 	private int k = 5;
+
+	// Stores an array of current globalBest values recoded over the iterations
 	public ArrayList<Double> progress = new ArrayList<Double>();
+
 	// **************** PSO ******************
 	private int dimensions;
 	// number of particles in the swarm
 	private int numParticles = 12;
-
 	// personal best acceleration coefficient
 	private double phi1 = 2.05;
 	// global best acceleration coefficient
@@ -52,16 +57,22 @@ public class PSO {
 	private final int VON = 2;
 	private final int RING = 3;
 	private final int RANDOM = 4;
+
 	// which neighborhood to test
 	public int neighborhood = 1;
 
 	// for controlling termination
 	private int iterationNum = 0;
 	private int maxIterations = 50;
-	// which one to test
+	// Which function to test
 	public int testFunction = 1;
 
 	// **************** Particle info ******************
+
+	// Each of the following structure is essentially an 2D array
+	// with the outermost array representing dimensions and the inner
+	// representing an array of all positions of the particles for that
+	// dimension
 
 	// x and y, z etc. positions for each particle
 	private ArrayList<double[]> position = new ArrayList<double[]>();
@@ -80,8 +91,6 @@ public class PSO {
 	private double gBestValue;
 
 	// **********************************
-
-
 
 	/* Constructor */
 	public PSO(String neighborhood, int swarmSize, int maxIterations, String function, int dimensions) {
@@ -110,11 +119,9 @@ public class PSO {
 		}
 
 		for (int i = 0; i < dimensions; i++) {
-			pBestDimensionPos.add(new double[numParticles]);
+			// Initialize the global best position array
 			gBestDimensionPos.add(0.0);
-		}
 
-		for (int i = 0; i < dimensions; i++) {
 			// create arrays for particle positions
 			position.add(new double[numParticles]);
 			// create arrays for particle velocities
@@ -129,20 +136,20 @@ public class PSO {
 		// set gbest value very high so it will be replaced in the loop
 		// that creates the particles
 		gBestValue = Double.MAX_VALUE;
-		
-		if (numParticles == 12){
+
+		// For VN make the topology have reasonable dimensions
+		if (numParticles == 12) {
 			width = 3;
-			height = numParticles/width;
-		}else if(numParticles == 20){
+			height = numParticles / width;
+		} else if (numParticles == 20) {
 			width = 4;
-			height = numParticles/width;
-		}
-		else if(numParticles == 50){
+			height = numParticles / width;
+		} else if (numParticles == 50) {
 			width = 5;
-			height = numParticles/width;
-		} else{
+			height = numParticles / width;
+		} else {
 			width = 3;
-			height = numParticles/width;
+			height = numParticles / width;
 		}
 
 	}
@@ -160,33 +167,18 @@ public class PSO {
 
 				double initPosition = 0;
 
-				// TODO: Change these so they are random doubles
 				switch (testFunction) {
 				case 1:
 					initPosition = rand.nextInt(15) + 15;
-					while (initPosition < 15 || initPosition > 30) {
-						initPosition = rand.nextInt(15) + 15;
-					}
 					break;
 				case 2:
 					initPosition = rand.nextInt(15) + 15;
-					while (initPosition < 15 || initPosition > 30) {
-						initPosition = rand.nextInt(15) + 15;
-					}
 					break;
 				case 3:
-
 					initPosition = rand.nextInt(16) + 16;
-					while (initPosition < 16 || initPosition > 32) {
-						initPosition = rand.nextInt(16) + 16;
-					}
 					break;
-
 				case 4:
 					initPosition = 5.12 + (5.12 - 2.56) * rand.nextDouble();
-					while (initPosition < 2.56 || initPosition > 5.12) {
-						initPosition = 2.56 + (5.12 - 2.56) * rand.nextDouble();
-					}
 					break;
 				default:
 					break;
@@ -216,6 +208,12 @@ public class PSO {
 					}
 					break;
 				case 3:
+					initVelocity = rand.nextInt(7) - 2;
+					while (initVelocity < -2 || initVelocity > 4) {
+						initVelocity = rand.nextInt(7) - 2;
+					}
+					break;
+
 				case 4:
 					initVelocity = rand.nextInt(7) - 2;
 					while (initVelocity < -2 || initVelocity > 4) {
@@ -246,10 +244,13 @@ public class PSO {
 
 		}
 		while (iterationNum < maxIterations) {
-			/*System.out.println("iteration " + iterationNum + " position value: " + gBestDimensionPos.get(0) + " "
-					+ gBestDimensionPos.get(1) + "  gbest value = " + gBestValue);*/
+			/*
+			 * System.out.println("iteration " + iterationNum +
+			 * " position value: " + gBestDimensionPos.get(0) + " " +
+			 * gBestDimensionPos.get(1) + "  gbest value = " + gBestValue);
+			 */
 			update();
-			if(iterationNum % 500 == 0 || iterationNum == 0){
+			if (iterationNum % 500 == 0 || iterationNum == 0) {
 				progress.add(gBestValue);
 			}
 			iterationNum++;
@@ -336,28 +337,28 @@ public class PSO {
 
 		double minValue = pBestValue[particle];
 		double position = pBestDimensionPos.get(dimension)[particle];
-		
+
 		int tempPosition = VNLeft(particle);
-		double tempValue = pBestValue[tempPosition]; 
+		double tempValue = pBestValue[tempPosition];
 		if (minValue > tempValue) {
 			minValue = tempValue;
 			position = pBestDimensionPos.get(dimension)[tempPosition];
 		}
-		 tempPosition = VNRight(particle);
-		 tempValue = pBestValue[tempPosition];
+		tempPosition = VNRight(particle);
+		tempValue = pBestValue[tempPosition];
 		if (minValue > tempValue) {
 			minValue = tempValue;
 			position = pBestDimensionPos.get(dimension)[tempPosition];
 		}
-		 tempPosition = VNUp(particle);
-		 tempValue = pBestValue[tempPosition];
+		tempPosition = VNUp(particle);
+		tempValue = pBestValue[tempPosition];
 		if (minValue > tempValue) {
 			minValue = tempValue;
 			position = pBestDimensionPos.get(dimension)[tempPosition];
 		}
 
-		 tempPosition = VNDown(particle);
-		 tempValue = pBestValue[tempPosition];
+		tempPosition = VNDown(particle);
+		tempValue = pBestValue[tempPosition];
 		if (minValue > tempValue) {
 			minValue = tempValue;
 			position = pBestDimensionPos.get(dimension)[tempPosition];
@@ -370,7 +371,7 @@ public class PSO {
 		if (particle % width == 0) {
 			return particle + (width - 1);
 		}
-		return  particle - 1;
+		return particle - 1;
 	}
 
 	private int VNRight(int particle) {
@@ -406,9 +407,9 @@ public class PSO {
 				number = rand.nextInt(numParticles);
 			} while (randomNumbers.contains(number));
 			randomNumbers.add(number);
-			if(minValue > pBestValue[number]){
-				 minValue = pBestValue[number];
-				 position = pBestDimensionPos.get(dimension)[number];
+			if (minValue > pBestValue[number]) {
+				minValue = pBestValue[number];
+				position = pBestDimensionPos.get(dimension)[number];
 			}
 		}
 
@@ -517,8 +518,8 @@ public class PSO {
 			sum2 += (Math.cos(2 * Math.PI * shiftedPosition.get(i)[index]));
 		}
 
-		return (-20.0 * Math.exp(-0.2 * Math.sqrt(sum1 / ((double) shiftedPosition.size())))
-				- Math.exp(sum2 / ((double) shiftedPosition.size())) + 20.0 + Math.E);
+		return (-20.0 * Math.exp(-0.2 * Math.sqrt(sum1 / (shiftedPosition.size())))
+				- Math.exp(sum2 / (shiftedPosition.size())) + 20.0 + Math.E);
 
 	}
 

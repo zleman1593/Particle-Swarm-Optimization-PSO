@@ -92,6 +92,14 @@ public class PSO {
 
 	// **********************************
 
+	
+public static void main(String[] args) throws IOException {
+		
+	PSO swarm = new PSO("vn", 50, 50, "ack", 30);
+	double test = swarm.start();
+	}
+	
+	
 	/* Constructor */
 	public PSO(String neighborhood, int swarmSize, int maxIterations, String function, int dimensions) {
 		this.numParticles = swarmSize;
@@ -160,7 +168,8 @@ public class PSO {
 		// find the initial global best
 		for (int p = 0; p < numParticles; p++) {
 
-			// set the coordinates and get the value of the objective function
+			// set the initial particle coordinates and get the value of the
+			// objective function
 			// at that point
 
 			for (int i = 0; i < dimensions; i++) {
@@ -168,16 +177,16 @@ public class PSO {
 				double initPosition = 0;
 
 				switch (testFunction) {
-				case 1:
+				case SPHERE_FUNCTION_NUM:
 					initPosition = rand.nextInt(15) + 15;
 					break;
-				case 2:
+				case ROSENBROCK_FUNCTION_NUM:
 					initPosition = rand.nextInt(15) + 15;
 					break;
-				case 3:
+				case ACKLEY_FUNCTION_NUM:
 					initPosition = rand.nextInt(16) + 16;
 					break;
-				case 4:
+				case RASTRIGIN_FUNCTION_NUM:
 					initPosition = 5.12 + (5.12 - 2.56) * rand.nextDouble();
 					break;
 				default:
@@ -195,30 +204,17 @@ public class PSO {
 				double initVelocity = 0;
 
 				switch (testFunction) {
-				case 1:
+				case SPHERE_FUNCTION_NUM:
 					initVelocity = rand.nextInt(5) - 2;
-					while (initVelocity < -2 || initVelocity > 2) {
-						initVelocity = rand.nextInt(5) - 2;
-					}
 					break;
-				case 2:
+				case ROSENBROCK_FUNCTION_NUM:
 					initVelocity = rand.nextInt(5) - 2;
-					while (initVelocity < -2 || initVelocity > 2) {
-						initVelocity = rand.nextInt(5) - 2;
-					}
 					break;
-				case 3:
+				case ACKLEY_FUNCTION_NUM:
 					initVelocity = rand.nextInt(7) - 2;
-					while (initVelocity < -2 || initVelocity > 4) {
-						initVelocity = rand.nextInt(7) - 2;
-					}
 					break;
-
-				case 4:
+				case RASTRIGIN_FUNCTION_NUM:
 					initVelocity = rand.nextInt(7) - 2;
-					while (initVelocity < -2 || initVelocity > 4) {
-						initVelocity = rand.nextInt(7) - 2;
-					}
 					break;
 				default:
 					break;
@@ -227,7 +223,7 @@ public class PSO {
 				velocity.get(i)[p] = initVelocity;
 			}
 
-			// ****** store initial personal best in the pBest arrays provided
+			// ****** store initial personal best in the pBest arrays
 			pBestValue[p] = currValue;
 			for (int i = 0; i < dimensions; i++) {
 				pBestDimensionPos.get(i)[p] = position.get(i)[p];
@@ -244,15 +240,20 @@ public class PSO {
 
 		}
 		while (iterationNum < maxIterations) {
-			/*
-			 * System.out.println("iteration " + iterationNum +
-			 * " position value: " + gBestDimensionPos.get(0) + " " +
-			 * gBestDimensionPos.get(1) + "  gbest value = " + gBestValue);
-			 */
-			update();
+			
+			 System.out.println("iteration " + iterationNum +
+			 " position value: " + gBestDimensionPos.get(0) + " " +
+			 gBestDimensionPos.get(1) + "  gbest value = " + gBestValue);
+			 
+
+			// For tracking algorithm progress over iterations
+			// Record iteration zero and every 500 iterations
 			if (iterationNum % 500 == 0 || iterationNum == 0) {
 				progress.add(gBestValue);
 			}
+			// Update the position and personal best if needed of all the
+			// particles
+			update();
 			iterationNum++;
 		}
 		System.out.println("DONE!!");
@@ -274,7 +275,7 @@ public class PSO {
 				double smallRandomNumber1 = phi1 * rand.nextDouble();
 				accPersDimensionPos[i] = smallRandomNumber1 * (pBestDimensionPos.get(i)[p] - position.get(i)[p]);
 
-				// ****** compute the acceleration due to global best
+				// ****** compute the acceleration due to Neighborhood best
 				double bestPosForNeighborhood = neighborhoodBest(p, i);
 				double smallRandomNumber2 = phi2 * rand.nextDouble();
 				accNDimensionPos[i] = smallRandomNumber2 * (bestPosForNeighborhood - position.get(i)[p]);
@@ -296,7 +297,6 @@ public class PSO {
 
 			if (newValue < pBestValue[p]) {
 				pBestValue[p] = newValue;
-
 				for (int i = 0; i < dimensions; i++) {
 					pBestDimensionPos.get(i)[p] = position.get(i)[p];
 				}
@@ -314,25 +314,27 @@ public class PSO {
 
 	}
 
+	// Takes a particle and returns the best value from its neighborhood
 	private double neighborhoodBest(int particle, int dimension) {
 		double bestValue = 0;
 		switch (neighborhood) {
-		case 1:
+		case GLOBAL:
 			bestValue = gBestDimensionPos.get(dimension);
 			break;
-		case 2:
+		case VON:
 			bestValue = VN(particle, dimension);
 			break;
-		case 3:
+		case RING:
 			bestValue = ring(particle, dimension);
 			break;
-		case 4:
+		case RANDOM:
 			bestValue = random(particle, dimension);
 			break;
 		}
 		return bestValue;
 	}
 
+	// Takes a particle and returns the best value from its VN neighborhood
 	private double VN(int particle, int dimension) {
 
 		double minValue = pBestValue[particle];
@@ -366,6 +368,8 @@ public class PSO {
 
 		return position;
 	}
+
+	// VN helper functions that make the coordinate grid into a torus
 
 	private int VNLeft(int particle) {
 		if (particle % width == 0) {
@@ -416,6 +420,9 @@ public class PSO {
 		return position;
 	}
 
+	// Takes a particle and returns the best value from it and its neighbor on
+	// each side of it in
+	// the ring structure
 	private double ring(int particle, int dimension) {
 		double minValue = pBestValue[particle];
 		double position = pBestDimensionPos.get(dimension)[particle];
@@ -444,7 +451,8 @@ public class PSO {
 		return position;
 	}
 
-	// returns the value of the specified function for point (x, y, z, etc.)
+	// returns the value of the specified function for point (x, y,
+	// z,....dimensions)
 	private double eval(int functionNum, ArrayList<double[]> position, int index) {
 
 		double retValue = 0.0;
@@ -518,8 +526,13 @@ public class PSO {
 			sum2 += (Math.cos(2 * Math.PI * shiftedPosition.get(i)[index]));
 		}
 
-		return (-20.0 * Math.exp(-0.2 * Math.sqrt(sum1 / (shiftedPosition.size())))
+		double result = (-20.0 * Math.exp(-0.2 * Math.sqrt(sum1 / (shiftedPosition.size())))
 				- Math.exp(sum2 / (shiftedPosition.size())) + 20.0 + Math.E);
+		if (result < 19.5 || result > 22){
+			System.out.println("Crazy: "+ result);
+		}
+		
+		return result;
 
 	}
 

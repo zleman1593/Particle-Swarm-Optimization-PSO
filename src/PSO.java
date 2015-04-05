@@ -61,8 +61,6 @@ public class PSO {
 	// which neighborhood to test
 	public int neighborhood = 1;
 
-	// for controlling termination
-	private int iterationNum = 0;
 	private int maxIterations = 50;
 	// Which function to test
 	public int testFunction = 1;
@@ -92,16 +90,17 @@ public class PSO {
 
 	// **********************************
 
-	
-public static void main(String[] args) throws IOException {
-		
-	PSO swarm = new PSO("vn", 50, 50, "ack", 30);
-	double test = swarm.start();
-	}
-	
-	
+
+	/*public static void main(String[] args) throws IOException {
+
+		PSO swarm = new PSO("vn", 50, 50, "ack", 30);
+		double test = swarm.run();
+	}*/
+
+
 	/* Constructor */
 	public PSO(String neighborhood, int swarmSize, int maxIterations, String function, int dimensions) {
+
 		this.numParticles = swarmSize;
 		this.maxIterations = maxIterations;
 		this.dimensions = dimensions;
@@ -126,24 +125,6 @@ public static void main(String[] args) throws IOException {
 			this.testFunction = RASTRIGIN_FUNCTION_NUM;
 		}
 
-		for (int i = 0; i < dimensions; i++) {
-			// Initialize the global best position array
-			gBestDimensionPos.add(0.0);
-
-			// create arrays for particle positions
-			position.add(new double[numParticles]);
-			// create arrays for particle velocities
-			velocity.add(new double[numParticles]);
-			// create arrays for particle personal bests
-			pBestDimensionPos.add(new double[numParticles]);
-
-		}
-		// create arrays for particle personal bests
-		pBestValue = new double[numParticles];
-
-		// set gbest value very high so it will be replaced in the loop
-		// that creates the particles
-		gBestValue = Double.MAX_VALUE;
 
 		// For VN make the topology have reasonable dimensions
 		if (numParticles == 12) {
@@ -159,10 +140,31 @@ public static void main(String[] args) throws IOException {
 			width = 3;
 			height = numParticles / width;
 		}
-
+		//The rest of the initialization
+		initialize();
 	}
 
-	public double start() {
+	private void initialize() {
+
+		for (int i = 0; i < dimensions; i++) {
+			// Initialize the global best position array
+			gBestDimensionPos.add(0.0);
+
+			// create arrays for particle positions
+			position.add(new double[numParticles]);
+			// create arrays for particle velocities
+			velocity.add(new double[numParticles]);
+			// create arrays for particle personal best position
+			pBestDimensionPos.add(new double[numParticles]);
+
+		}
+		// create arrays for particle personal best value
+		pBestValue = new double[numParticles];
+
+		// set gbest value very high so it will be replaced in the loop
+		// that creates the particles
+		gBestValue = Double.MAX_VALUE;
+
 
 		// create particles and calculate initial personal bests;
 		// find the initial global best
@@ -171,65 +173,21 @@ public static void main(String[] args) throws IOException {
 			// set the initial particle coordinates and get the value of the
 			// objective function
 			// at that point
+			initParticlePositionAndVelocity(p);
 
-			for (int i = 0; i < dimensions; i++) {
-
-				double initPosition = 0;
-
-				switch (testFunction) {
-				case SPHERE_FUNCTION_NUM:
-					initPosition = rand.nextInt(15) + 15;
-					break;
-				case ROSENBROCK_FUNCTION_NUM:
-					initPosition = rand.nextInt(15) + 15;
-					break;
-				case ACKLEY_FUNCTION_NUM:
-					initPosition = rand.nextInt(16) + 16;
-					break;
-				case RASTRIGIN_FUNCTION_NUM:
-					initPosition = 5.12 + (5.12 - 2.56) * rand.nextDouble();
-					break;
-				default:
-					break;
-				}
-
-				position.get(i)[p] = initPosition;
-			}
 
 			// initial value
 			double currValue = eval(testFunction, position, p);
 
-			// initialize velocities
-			for (int i = 0; i < dimensions; i++) {
-				double initVelocity = 0;
-
-				switch (testFunction) {
-				case SPHERE_FUNCTION_NUM:
-					initVelocity = rand.nextInt(5) - 2;
-					break;
-				case ROSENBROCK_FUNCTION_NUM:
-					initVelocity = rand.nextInt(5) - 2;
-					break;
-				case ACKLEY_FUNCTION_NUM:
-					initVelocity = rand.nextInt(7) - 2;
-					break;
-				case RASTRIGIN_FUNCTION_NUM:
-					initVelocity = rand.nextInt(7) - 2;
-					break;
-				default:
-					break;
-				}
-
-				velocity.get(i)[p] = initVelocity;
-			}
-
-			// ****** store initial personal best in the pBest arrays
+			// ****** store initial personal best for particle
 			pBestValue[p] = currValue;
+
+			//Initial position values are used to initialize the pBestDimensionPos data structure
 			for (int i = 0; i < dimensions; i++) {
 				pBestDimensionPos.get(i)[p] = position.get(i)[p];
 			}
 
-			// ****** check for new global best and store, if necessary, in the
+			// ****** check for new global best and if necessary, store in the
 			// variables provided
 			if (currValue < gBestValue) {
 				gBestValue = currValue;
@@ -239,12 +197,18 @@ public static void main(String[] args) throws IOException {
 			}
 
 		}
-		while (iterationNum < maxIterations) {
-			
-			 System.out.println("iteration " + iterationNum +
-			 " position value: " + gBestDimensionPos.get(0) + " " +
-			 gBestDimensionPos.get(1) + "  gbest value = " + gBestValue);
-			 
+
+	}
+
+	//Main Loop of ALgorithm
+	public double run(){
+
+		for (int iterationNum = 0; iterationNum < maxIterations; iterationNum++) {
+
+			/*System.out.println("iteration " + iterationNum +
+					" position value: " + gBestDimensionPos.get(0) + " " +
+					gBestDimensionPos.get(1) + "  gbest value = " + gBestValue);*/
+
 
 			// For tracking algorithm progress over iterations
 			// Record iteration zero and every 500 iterations
@@ -254,7 +218,6 @@ public static void main(String[] args) throws IOException {
 			// Update the position and personal best if needed of all the
 			// particles
 			update();
-			iterationNum++;
 		}
 		System.out.println("DONE!!");
 		return gBestValue;
@@ -266,24 +229,26 @@ public static void main(String[] args) throws IOException {
 		for (int p = 0; p < numParticles; p++) {
 
 			double newValue;
-			double accPersDimensionPos[] = new double[dimensions];
-			double accNDimensionPos[] = new double[dimensions];
+
+
 
 			// Iterate over all the dimensions
 			for (int i = 0; i < dimensions; i++) {
+				double accNDimensionPos;
+				double accPersDimensionPos;
 				// ****** compute the acceleration due to personal best
 				double smallRandomNumber1 = phi1 * rand.nextDouble();
-				accPersDimensionPos[i] = smallRandomNumber1 * (pBestDimensionPos.get(i)[p] - position.get(i)[p]);
+				accPersDimensionPos = smallRandomNumber1 * (pBestDimensionPos.get(i)[p] - position.get(i)[p]);
 
 				// ****** compute the acceleration due to Neighborhood best
 				double bestPosForNeighborhood = neighborhoodBest(p, i);
 				double smallRandomNumber2 = phi2 * rand.nextDouble();
-				accNDimensionPos[i] = smallRandomNumber2 * (bestPosForNeighborhood - position.get(i)[p]);
+				accNDimensionPos = smallRandomNumber2 * (bestPosForNeighborhood - position.get(i)[p]);
 
 				// ****** constrict the new velocity and reset the current
 				// velocity
 				velocity.get(i)[p] = constrictionFactor
-						* (velocity.get(i)[p] + accPersDimensionPos[i] + accNDimensionPos[i]);
+						* (velocity.get(i)[p] + accPersDimensionPos + accNDimensionPos);
 
 				// ****** update the position
 				position.get(i)[p] = position.get(i)[p] + velocity.get(i)[p];
@@ -313,6 +278,40 @@ public static void main(String[] args) throws IOException {
 		}
 
 	}
+
+
+	private void initParticlePositionAndVelocity(int p){
+		for (int i = 0; i < dimensions; i++) {
+
+			double initPosition = 0;
+			double initVelocity = 0;
+
+			switch (testFunction) {
+			case SPHERE_FUNCTION_NUM:
+				initPosition = rand.nextInt(15) + 15;
+				initVelocity = rand.nextInt(5) - 2;
+				break;
+			case ROSENBROCK_FUNCTION_NUM:
+				initPosition = rand.nextInt(15) + 15;
+				initVelocity = rand.nextInt(5) - 2;
+				break;
+			case ACKLEY_FUNCTION_NUM:
+				initPosition = (rand.nextDouble()*(32-16)) + 16;
+				initVelocity = (rand.nextDouble()*(4+2)) - 2;
+				break;
+			case RASTRIGIN_FUNCTION_NUM:
+				initPosition = 5.12 + (5.12 - 2.56) * rand.nextDouble();
+				initVelocity = rand.nextInt(7) - 2;
+				break;
+			default:
+				break;
+			}
+			position.get(i)[p] = initPosition;
+			velocity.get(i)[p] = initVelocity;
+		}
+
+	}
+
 
 	// Takes a particle and returns the best value from its neighborhood
 	private double neighborhoodBest(int particle, int dimension) {
@@ -509,7 +508,7 @@ public static void main(String[] args) throws IOException {
 		double res = 10 * shiftedPosition.size();
 		for (int i = 0; i < shiftedPosition.size(); i++)
 			res += Math.pow(shiftedPosition.get(i)[index], 2) - 10
-					* Math.cos(2.0 * Math.PI * shiftedPosition.get(i)[index]);
+			* Math.cos(2.0 * Math.PI * shiftedPosition.get(i)[index]);
 		return res;
 
 	}
@@ -528,12 +527,16 @@ public static void main(String[] args) throws IOException {
 
 		double result = (-20.0 * Math.exp(-0.2 * Math.sqrt(sum1 / (shiftedPosition.size())))
 				- Math.exp(sum2 / (shiftedPosition.size())) + 20.0 + Math.E);
-		if (result < 19.5 || result > 22){
+		/*if (result < 19.5 || result > 22){
 			System.out.println("Crazy: "+ result);
-		}
-		
+		}*/
+
 		return result;
 
 	}
 
+
+
+
 }
+

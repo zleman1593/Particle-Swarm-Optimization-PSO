@@ -20,7 +20,7 @@ public class PSOController {
 			public void run() {
 			
 				File file = new File(root + "/first" + ".txt");
-try{
+					try{
 				// If file does not exists, then create it.
 				if (!file.exists()) {
 					file.createNewFile();
@@ -35,7 +35,7 @@ try{
 				
 				for (int i = 0; i < 50; i++) {
 					PSO swarm = new PSO("gl", 12, 50000, "rok", 30);
-					double test = swarm.start();
+					double test = swarm.run();
 					outputWriter.write("" + test);
 					outputWriter.newLine();
 					addToArray(list, swarm.progress);
@@ -48,7 +48,7 @@ try{
 				list = get2DArrayList(SizeOfArray);
 				for (int i = 0; i < 50; i++) {
 					PSO swarm = new PSO("ri", 12, 50000, "rok", 30);
-					double test = swarm.start();
+					double test = swarm.run();
 					outputWriter.write("" + test);
 					outputWriter.newLine();
 					addToArray(list, swarm.progress);
@@ -61,7 +61,7 @@ try{
 				list = get2DArrayList(SizeOfArray);
 				for (int i = 0; i < 50; i++) {
 					PSO swarm = new PSO("vn", 12, 50000, "rok", 30);
-					double test = swarm.start();
+					double test = swarm.run();
 					outputWriter.write("" + test);
 					outputWriter.newLine();
 					addToArray(list, swarm.progress);
@@ -74,7 +74,7 @@ try{
 				list = get2DArrayList(SizeOfArray);
 				for (int i = 0; i < 50; i++) {
 					PSO swarm = new PSO("ra", 12, 50000, "rok", 30);
-					double test = swarm.start();
+					double test = swarm.run();
 					outputWriter.write("" + test);
 					outputWriter.newLine();
 					addToArray(list, swarm.progress);
@@ -115,7 +115,7 @@ try{
 				ArrayList<ArrayList<Double>> list = get2DArrayList(SizeOfArray);
 				for (int i = 0; i < 50; i++) {
 					PSO swarm = new PSO("gl", 12, 50000, "ack", 30);
-					double test = swarm.start();
+					double test = swarm.run();
 					outputWriter.write("" + test);
 					outputWriter.newLine();
 					addToArray(list, swarm.progress);
@@ -129,7 +129,7 @@ try{
 				
 				for (int i = 0; i < 50; i++) {
 					PSO swarm = new PSO("ri", 12, 50000, "ack", 30);
-					double test = swarm.start();
+					double test = swarm.run();
 					outputWriter.write("" + test);
 					outputWriter.newLine();
 					addToArray(list, swarm.progress);
@@ -143,7 +143,7 @@ try{
 				
 				for (int i = 0; i < 50; i++) {
 					PSO swarm = new PSO("vn", 12, 50000, "ack", 30);
-					double test = swarm.start();
+					double test = swarm.run();
 					outputWriter.write("" + test);
 					outputWriter.newLine();
 					addToArray(list, swarm.progress);
@@ -158,7 +158,7 @@ try{
 				
 				for (int i = 0; i < 50; i++) {
 					PSO swarm = new PSO("ra", 12, 50000, "ack", 30);
-					double test = swarm.start();
+					double test = swarm.run();
 					outputWriter.write("" + test);
 					outputWriter.newLine();
 					addToArray(list, swarm.progress);
@@ -196,7 +196,7 @@ try{
 				ArrayList<ArrayList<Double>> list = get2DArrayList(SizeOfArray);
 				for (int i = 0; i < 50; i++) {
 					PSO swarm = new PSO("gl", 12, 50000, "ras", 30);
-					double test = swarm.start();
+					double test = swarm.run();
 					outputWriter.write("" + test);
 					outputWriter.newLine();
 					addToArray(list, swarm.progress);
@@ -209,7 +209,7 @@ try{
 				list = get2DArrayList(SizeOfArray);
 				for (int i = 0; i < 50; i++) {
 					PSO swarm = new PSO("ri", 12, 50000, "ras", 30);
-					double test = swarm.start();
+					double test = swarm.run();
 					outputWriter.write("" + test);
 					outputWriter.newLine();
 					addToArray(list, swarm.progress);
@@ -222,7 +222,7 @@ try{
 				list = get2DArrayList(SizeOfArray);
 				for (int i = 0; i < 50; i++) {
 					PSO swarm = new PSO("vn", 12, 50000, "ras", 30);
-					double test = swarm.start();
+					double test = swarm.run();
 					outputWriter.write("" + test);
 					outputWriter.newLine();
 					addToArray(list, swarm.progress);
@@ -236,7 +236,7 @@ try{
 				outputWriter.newLine();
 				for (int i = 0; i < 50; i++) {
 					PSO swarm = new PSO("ra", 12, 50000, "ras", 30);
-					double test = swarm.start();
+					double test = swarm.run();
 					outputWriter.write("" + test);
 					outputWriter.newLine();
 					addToArray(list, swarm.progress);
@@ -252,7 +252,7 @@ try{
 				list = get2DArrayList(SizeOfArray);
 				for (int i = 0; i < 50; i++) {
 					PSO swarm = new PSO("gl", 20, 50000, "rok", 30);
-					double test = swarm.start();
+					double test = swarm.run();
 					outputWriter.write("" + test);
 					outputWriter.newLine();
 					addToArray(list, swarm.progress);
@@ -265,7 +265,7 @@ try{
 				list = get2DArrayList(SizeOfArray);
 				for (int i = 0; i < 50; i++) {
 					PSO swarm = new PSO("ri", 20, 50000, "rok", 30);
-					double test = swarm.start();
+					double test = swarm.run();
 					outputWriter.write("" + test);
 					outputWriter.newLine();
 					addToArray(list, swarm.progress);
@@ -278,7 +278,7 @@ try{
 				list = get2DArrayList(SizeOfArray);
 				for (int i = 0; i < 50; i++) {
 					PSO swarm = new PSO("vn", 20, 50000, "rok", 30);
-					double test = swarm.start();
+					double test = swarm.run();
 					outputWriter.write("" + test);
 					outputWriter.newLine();
 					addToArray(list, swarm.progress);
@@ -292,7 +292,7 @@ try{
 				list = get2DArrayList(SizeOfArray);
 				for (int i = 0; i < 50; i++) {
 					PSO swarm = new PSO("ra", 20, 50000, "rok", 30);
-					double test = swarm.start();
+					double test = swarm.run();
 					outputWriter.write("" + test);
 					outputWriter.newLine();
 					addToArray(list, swarm.progress);
@@ -331,7 +331,7 @@ try{
 				ArrayList<ArrayList<Double>> list = get2DArrayList(SizeOfArray);
 				for (int i = 0; i < 50; i++) {
 					PSO swarm = new PSO("gl", 20, 50000, "ack", 30);
-					double test = swarm.start();
+					double test = swarm.run();
 					outputWriter.write("" + test);
 					outputWriter.newLine();
 					addToArray(list, swarm.progress);
@@ -344,7 +344,7 @@ try{
 				list = get2DArrayList(SizeOfArray);
 				for (int i = 0; i < 50; i++) {
 					PSO swarm = new PSO("ri", 20, 50000, "ack", 30);
-					double test = swarm.start();
+					double test = swarm.run();
 					outputWriter.write("" + test);
 					outputWriter.newLine();
 					addToArray(list, swarm.progress);
@@ -357,7 +357,7 @@ try{
 				list = get2DArrayList(SizeOfArray);
 				for (int i = 0; i < 50; i++) {
 					PSO swarm = new PSO("vn", 20, 50000, "ack", 30);
-					double test = swarm.start();
+					double test = swarm.run();
 					outputWriter.write("" + test);
 					outputWriter.newLine();
 					addToArray(list, swarm.progress);
@@ -370,7 +370,7 @@ try{
 				list = get2DArrayList(SizeOfArray);
 				for (int i = 0; i < 50; i++) {
 					PSO swarm = new PSO("ra", 20, 50000, "ack", 30);
-					double test = swarm.start();
+					double test = swarm.run();
 					outputWriter.write("" + test);
 					outputWriter.newLine();
 					addToArray(list, swarm.progress);
@@ -411,7 +411,7 @@ try{
 				ArrayList<ArrayList<Double>>	list = get2DArrayList(SizeOfArray);
 				for (int i = 0; i < 50; i++) {
 					PSO swarm = new PSO("gl", 20, 50000, "ras", 30);
-					double test = swarm.start();
+					double test = swarm.run();
 					outputWriter.write("" + test);
 					outputWriter.newLine();
 					addToArray(list, swarm.progress);
@@ -424,7 +424,7 @@ try{
 				list = get2DArrayList(SizeOfArray);
 				for (int i = 0; i < 50; i++) {
 					PSO swarm = new PSO("ri", 20, 50000, "ras", 30);
-					double test = swarm.start();
+					double test = swarm.run();
 					outputWriter.write("" + test);
 					outputWriter.newLine();
 					addToArray(list, swarm.progress);
@@ -438,7 +438,7 @@ try{
 				list = get2DArrayList(SizeOfArray);
 				for (int i = 0; i < 50; i++) {
 					PSO swarm = new PSO("vn", 20, 50000, "ras", 30);
-					double test = swarm.start();
+					double test = swarm.run();
 					outputWriter.write("" + test);
 					outputWriter.newLine();
 					addToArray(list, swarm.progress);
@@ -451,7 +451,7 @@ try{
 				list = get2DArrayList(SizeOfArray);
 				for (int i = 0; i < 50; i++) {
 					PSO swarm = new PSO("ra", 20, 50000, "ras", 30);
-					double test = swarm.start();
+					double test = swarm.run();
 					outputWriter.write("" + test);
 					outputWriter.newLine();
 					addToArray(list, swarm.progress);
@@ -468,7 +468,7 @@ try{
 				list = get2DArrayList(SizeOfArray);
 				for (int i = 0; i < 50; i++) {
 					PSO swarm = new PSO("gl", 50, 50000, "rok", 30);
-					double test = swarm.start();
+					double test = swarm.run();
 					outputWriter.write("" + test);
 					outputWriter.newLine();
 					addToArray(list, swarm.progress);
@@ -481,7 +481,7 @@ try{
 				list = get2DArrayList(SizeOfArray);
 				for (int i = 0; i < 50; i++) {
 					PSO swarm = new PSO("ri", 50, 50000, "rok", 30);
-					double test = swarm.start();
+					double test = swarm.run();
 					outputWriter.write("" + test);
 					outputWriter.newLine();
 					addToArray(list, swarm.progress);
@@ -495,7 +495,7 @@ try{
 				list = get2DArrayList(SizeOfArray);
 				for (int i = 0; i < 50; i++) {
 					PSO swarm = new PSO("vn", 50, 50000, "rok", 30);
-					double test = swarm.start();
+					double test = swarm.run();
 					outputWriter.write("" + test);
 					outputWriter.newLine();
 					addToArray(list, swarm.progress);
@@ -509,7 +509,7 @@ try{
 				list = get2DArrayList(SizeOfArray);
 				for (int i = 0; i < 50; i++) {
 					PSO swarm = new PSO("ra", 50, 50000, "rok", 30);
-					double test = swarm.start();
+					double test = swarm.run();
 					outputWriter.write("" + test);
 					outputWriter.newLine();
 					addToArray(list, swarm.progress);
@@ -549,7 +549,7 @@ try{
 				ArrayList<ArrayList<Double>>	list = get2DArrayList(SizeOfArray);
 				for (int i = 0; i < 50; i++) {
 					PSO swarm = new PSO("gl", 50, 50000, "ack", 30);
-					double test = swarm.start();
+					double test = swarm.run();
 					outputWriter.write("" + test);
 					outputWriter.newLine();
 					addToArray(list, swarm.progress);
@@ -562,7 +562,7 @@ try{
 				list = get2DArrayList(SizeOfArray);
 				for (int i = 0; i < 50; i++) {
 					PSO swarm = new PSO("ri", 50, 50000, "ack", 30);
-					double test = swarm.start();
+					double test = swarm.run();
 					outputWriter.write("" + test);
 					outputWriter.newLine();
 					addToArray(list, swarm.progress);
@@ -575,7 +575,7 @@ try{
 				list = get2DArrayList(SizeOfArray);
 				for (int i = 0; i < 50; i++) {
 					PSO swarm = new PSO("vn", 50, 50000, "ack", 30);
-					double test = swarm.start();
+					double test = swarm.run();
 					outputWriter.write("" + test);
 					outputWriter.newLine();
 					addToArray(list, swarm.progress);
@@ -589,7 +589,7 @@ try{
 				list = get2DArrayList(SizeOfArray);
 				for (int i = 0; i < 50; i++) {
 					PSO swarm = new PSO("ra", 50, 50000, "ack", 30);
-					double test = swarm.start();
+					double test = swarm.run();
 					outputWriter.write("" + test);
 					outputWriter.newLine();
 					addToArray(list, swarm.progress);
@@ -627,7 +627,7 @@ try{
 				ArrayList<ArrayList<Double>> list = get2DArrayList(SizeOfArray);
 				for (int i = 0; i < 50; i++) {
 					PSO swarm = new PSO("gl", 50, 50000, "ras", 30);
-					double test = swarm.start();
+					double test = swarm.run();
 					outputWriter.write("" + test);
 					outputWriter.newLine();
 					addToArray(list, swarm.progress);
@@ -640,7 +640,7 @@ try{
 				list = get2DArrayList(SizeOfArray);
 				for (int i = 0; i < 50; i++) {
 					PSO swarm = new PSO("ri", 50, 50000, "ras", 30);
-					double test = swarm.start();
+					double test = swarm.run();
 					outputWriter.write("" + test);
 					outputWriter.newLine();
 					addToArray(list, swarm.progress);
@@ -653,7 +653,7 @@ try{
 				list = get2DArrayList(SizeOfArray);
 				for (int i = 0; i < 50; i++) {
 					PSO swarm = new PSO("vn", 50, 50000, "ras", 30);
-					double test = swarm.start();
+					double test = swarm.run();
 					outputWriter.write("" + test);
 					outputWriter.newLine();
 					addToArray(list, swarm.progress);
@@ -667,7 +667,7 @@ try{
 				list = get2DArrayList(SizeOfArray);
 				for (int i = 0; i < 50; i++) {
 					PSO swarm = new PSO("ra", 50, 50000, "ras", 30);
-					double test = swarm.start();
+					double test = swarm.run();
 					outputWriter.write("" + test);
 					outputWriter.newLine();
 					addToArray(list, swarm.progress);
@@ -686,7 +686,6 @@ try{
 		};
 		
 	
-		
 		//Starts the 8 threads
 		//Thread thr1 = new Thread(r1);
 		Thread thr2 = new Thread(r2);
@@ -713,6 +712,7 @@ try{
 		thr6.join();
 //		thr7.join();
 
+	
 		} catch (InterruptedException e) {
 		e.printStackTrace();
 		

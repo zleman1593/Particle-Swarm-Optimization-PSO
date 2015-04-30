@@ -7,20 +7,14 @@ Zackery Leman, Min "Ivy" Xing, Alana Weinstein
 
  */
 
-import java.util.*;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-
-//Notes: make sure to update global appropriately
-//Remove the random while loops as they are unneeded
+import java.util.*;
 
 //Change k to be taken as a parameter
 
 public class PSO {
 
-	// for random numbers
+	// For random numbers
 	private Random rand = new Random();
 
 	// The width and height of the topology for VN
@@ -34,6 +28,7 @@ public class PSO {
 	public ArrayList<Double> progress = new ArrayList<Double>();
 
 	// **************** PSO ******************
+	// number of dimensions
 	private int dimensions;
 	// number of particles in the swarm
 	private int numParticles = 12;
@@ -67,20 +62,20 @@ public class PSO {
 
 	// **************** Particle info ******************
 
-	// Each of the following structure is essentially an 2D array
+	// Each of the following structure is essentially a 2D array
 	// with the outermost array representing dimensions and the inner
 	// representing an array of all positions of the particles for that
 	// dimension
 
-	// x and y, z etc. positions for each particle
+	// x, y,z... etc. positions for each particle
 	private ArrayList<double[]> position = new ArrayList<double[]>();
 
-	// x and y velocities for each particle
+	// x, y, z... velocities for each particle
 	private ArrayList<double[]> velocity = new ArrayList<double[]>();
 
-	// pBest positions and values for each particle
+	// pBest positions  for each particle in each dimension
 	private ArrayList<double[]> pBestDimensionPos = new ArrayList<double[]>();
-
+	//pBest   values for each particle
 	private double[] pBestValue;
 
 	// **************Global N********************
@@ -91,16 +86,16 @@ public class PSO {
 	// **********************************
 
 
-	/*public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException {
 
 		PSO swarm = new PSO("vn", 50, 50, "ack", 30);
 		double test = swarm.run();
-	}*/
+	}
 
 
 	/* Constructor */
 	public PSO(String neighborhood, int swarmSize, int maxIterations, String function, int dimensions) {
-
+		double temp = this.constrictionFactor;
 		this.numParticles = swarmSize;
 		this.maxIterations = maxIterations;
 		this.dimensions = dimensions;
@@ -147,6 +142,7 @@ public class PSO {
 	private void initialize() {
 
 		for (int i = 0; i < dimensions; i++) {
+			
 			// Initialize the global best position array
 			gBestDimensionPos.add(0.0);
 
@@ -187,8 +183,7 @@ public class PSO {
 				pBestDimensionPos.get(i)[p] = position.get(i)[p];
 			}
 
-			// ****** check for new global best and if necessary, store in the
-			// variables provided
+			// ****** check for new global best and if necessary, update it
 			if (currValue < gBestValue) {
 				gBestValue = currValue;
 				for (int i = 0; i < dimensions; i++) {
@@ -227,23 +222,20 @@ public class PSO {
 
 		// update all the particles
 		for (int p = 0; p < numParticles; p++) {
-
-			double newValue;
-
-
+			
 
 			// Iterate over all the dimensions
 			for (int i = 0; i < dimensions; i++) {
-				double accNDimensionPos;
-				double accPersDimensionPos;
+				
+
 				// ****** compute the acceleration due to personal best
 				double smallRandomNumber1 = phi1 * rand.nextDouble();
-				accPersDimensionPos = smallRandomNumber1 * (pBestDimensionPos.get(i)[p] - position.get(i)[p]);
+				double accPersDimensionPos = smallRandomNumber1 * (pBestDimensionPos.get(i)[p] - position.get(i)[p]);
 
 				// ****** compute the acceleration due to Neighborhood best
 				double bestPosForNeighborhood = neighborhoodBest(p, i);
 				double smallRandomNumber2 = phi2 * rand.nextDouble();
-				accNDimensionPos = smallRandomNumber2 * (bestPosForNeighborhood - position.get(i)[p]);
+				double accNDimensionPos = smallRandomNumber2 * (bestPosForNeighborhood - position.get(i)[p]);
 
 				// ****** constrict the new velocity and reset the current
 				// velocity
@@ -251,12 +243,12 @@ public class PSO {
 						* (velocity.get(i)[p] + accPersDimensionPos + accNDimensionPos);
 
 				// ****** update the position
-				position.get(i)[p] = position.get(i)[p] + velocity.get(i)[p];
+				position.get(i)[p]  += velocity.get(i)[p];
 
 			}
 
 			// ****** find the value of the new position
-			newValue = eval(testFunction, position, p);
+			double newValue = eval(testFunction, position, p);
 
 			// ****** update personal best and global best, if necessary
 
@@ -289,11 +281,11 @@ public class PSO {
 			switch (testFunction) {
 			case SPHERE_FUNCTION_NUM:
 				initPosition = rand.nextInt(15) + 15;
-				initVelocity = rand.nextInt(5) - 2;
+				initVelocity =  (rand.nextDouble()*(4+2)) - 2;
 				break;
 			case ROSENBROCK_FUNCTION_NUM:
-				initPosition = rand.nextInt(15) + 15;
-				initVelocity = rand.nextInt(5) - 2;
+				initPosition = (rand.nextDouble()*(30-15))  + 15;
+				initVelocity = (rand.nextDouble()*(2+2)) - 2;
 				break;
 			case ACKLEY_FUNCTION_NUM:
 				initPosition = (rand.nextDouble()*(32-16)) + 16;
@@ -301,7 +293,7 @@ public class PSO {
 				break;
 			case RASTRIGIN_FUNCTION_NUM:
 				initPosition = 5.12 + (5.12 - 2.56) * rand.nextDouble();
-				initVelocity = rand.nextInt(7) - 2;
+				initVelocity =   (6 * rand.nextDouble()) - 2;
 				break;
 			default:
 				break;
@@ -527,10 +519,6 @@ public class PSO {
 
 		double result = (-20.0 * Math.exp(-0.2 * Math.sqrt(sum1 / (shiftedPosition.size())))
 				- Math.exp(sum2 / (shiftedPosition.size())) + 20.0 + Math.E);
-		/*if (result < 19.5 || result > 22){
-			System.out.println("Crazy: "+ result);
-		}*/
-
 		return result;
 
 	}

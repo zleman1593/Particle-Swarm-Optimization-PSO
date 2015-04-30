@@ -10,7 +10,7 @@ public class PSOController {
 
 
 	public static void main(String[] args) throws IOException {
-		
+		//Run all the test
 		test();
 	}
 	
@@ -687,30 +687,30 @@ public class PSOController {
 		
 	
 		//Starts the 8 threads
-		//Thread thr1 = new Thread(r1);
-		Thread thr2 = new Thread(r2);
-		//Thread thr3 = new Thread(r3);
-		Thread thr4 = new Thread(r4);
-	//	Thread thr5 = new Thread(r5);
-		Thread thr6 = new Thread(r6);
-		//Thread thr7 = new Thread(r7);
+		Thread thr1 = new Thread(r1);
+		//Thread thr2 = new Thread(r2);
+		Thread thr3 = new Thread(r3);
+		//Thread thr4 = new Thread(r4);
+		Thread thr5 = new Thread(r5);
+		//	Thread thr6 = new Thread(r6);
+		Thread thr7 = new Thread(r7);
 
-//		thr1.start();
-		thr2.start();
-//		thr3.start();
-		thr4.start();
-//		thr5.start();
-		thr6.start();
-//		thr7.start();
+		thr1.start();
+//		thr2.start();
+		thr3.start();
+//		thr4.start();
+		thr5.start();
+//		thr6.start();
+		thr7.start();
 	
 		try {
-//		thr1.join();
-		thr2.join();
-//		thr3.join();
-		thr4.join();
-//		thr5.join();
-		thr6.join();
-//		thr7.join();
+		thr1.join();
+//		thr2.join();
+		thr3.join();
+//		thr4.join();
+		thr5.join();
+//		thr6.join();
+		thr7.join();
 
 	
 		} catch (InterruptedException e) {
